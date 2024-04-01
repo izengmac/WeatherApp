@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image } from 'react-native';
 import * as Location from 'expo-location';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { weatherConditions } from './WeatherConditions';
+import PropTypes from 'prop-types';
 
 const API_KEY = '5d240e73bdeaa7d6c94bdcd0543d36ec';
 
@@ -17,7 +20,9 @@ const clothingItems = [
   { name: "Summer Dress", image: require('../assets/dress (1).png') },
 ];
 
-const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidityvalue }) => {
+const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidityvalue, typeweather}) => {
+  console.log(typeof typeweather)
+  
   return (
     <View style={{
       backgroundColor: "#7899EA",
@@ -74,11 +79,13 @@ const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidi
           justifyContent: 'center',
           alignItems: 'center'
         }}>
-          <Image source={require('../assets/clouds.png')} style={{
-            width: 48,
-            height: 48,
 
-          }} />
+          <MaterialCommunityIcons
+          size={72}
+          name={weatherConditions[typeweather]?.icon || ''}
+          color={'#fff'}
+        />
+         
         </View>
       </View>
     </View>
@@ -160,6 +167,13 @@ function HomeScreen() {
         .then(res => res.json())
         .then(data => {
           setData(data);
+          console.log(data)
+          console.log(data)
+          console.log(typeof data.weather[0].main)
+          console.log(data.weather[0].main)
+         
+          
+          
         });
     }
   };
@@ -179,11 +193,18 @@ function HomeScreen() {
         windspeed="WindSpeed"
         windspeedvalue={data.wind ? data.wind.speed : ""}
         title="Current Weather"
+        typeweather={data.weather && data.weather.length > 0 ? data.weather[0].main : ""}
+       
+
       />
       <ClothingRecommendation temperature={temperature} weather={weather} />
     </View>
   );
 }
+
+WeatherItem.propTypes = {
+  typeweather: PropTypes.string
+};
 
 export default HomeScreen;
 
