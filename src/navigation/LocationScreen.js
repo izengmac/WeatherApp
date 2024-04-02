@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const API_KEY ="5d240e73bdeaa7d6c94bdcd0543d36ec";
-import * as Location from 'expo-location'
-import { Button } from 'react-native-web';
+import * as Location from 'expo-location';
+import SearchScreen from '../screens/SearchScreen';
 
 function LocationScreen({navigation}) {
     const [date, setDate] = useState('')

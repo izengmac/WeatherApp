@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-function SearchScreen() {
+
+function SearchScreen({weather,temperature}) {
   return (
    <View style={{
     justifyContent:'center',
@@ -11,6 +12,11 @@ function SearchScreen() {
     style={styles.input}
     placeholder='Enter a city'
     />
+    <Text style={
+        {
+            color:'#000000'
+        }
+    }>{weather}</Text>
    </View>
   )
 }
