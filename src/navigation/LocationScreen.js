@@ -5,8 +5,9 @@ const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const API_KEY ="5d240e73bdeaa7d6c94bdcd0543d36ec";
 import * as Location from 'expo-location'
+import { Button } from 'react-native-web';
 
-function LocationScreen() {
+function LocationScreen({navigation}) {
     const [date, setDate] = useState('')
     const [time, setTime] = useState('')
     const [data, setData] =  useState({});
@@ -62,8 +63,11 @@ function LocationScreen() {
           color:'#1B6BB1',
           fontSize:20,
           fontWeight:"400",
-          marginBottom:16
-        }}>Add</Text>
+          marginBottom:16,
+          
+        }}
+        onPress={() => navigation.navigate('Search')}
+        >Add</Text>
         <Text style={{
           fontWeight:500,
           fontSize:40,
