@@ -6,12 +6,13 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const API_KEY ="5d240e73bdeaa7d6c94bdcd0543d36ec";
 import * as Location from 'expo-location';
 import SearchScreen from '../screens/SearchScreen';
+import { fetchDataFromApi } from '../api.js';
 
 function LocationScreen({navigation}) {
     const [date, setDate] = useState('')
     const [time, setTime] = useState('')
     const [data, setData] =  useState({});
-
+    console.log(data)
     useEffect (() => {
         setInterval(() => {
             const time = new Date();
@@ -39,21 +40,20 @@ function LocationScreen({navigation}) {
         }
   
         let location = await Location.getCurrentPositionAsync({});
-        fetchDataFromApi(location.coords.latitude, location.coords.longitude);
+       const Apiconst =  fetchDataFromApi(location.coords.latitude, location.coords.longitude);
+       const Apiconss = fetchDataFromApi(location.coords.latitude, location.coords.longitude, '')
+          .then(data => {
+          
+            setData(data)
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+    
+
       })();
     }, [])
-  
-    const fetchDataFromApi = (latitude, longitude) => {
-      if(latitude && longitude) {
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`).then(res => res.json()).then(data => {
-  
-        // console.log(data)
-        console.log(data)
-        setData(data)
-        })
-      }
-      
-    }
+
   return (
     <View style={{
       paddingVertical:80,

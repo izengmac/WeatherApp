@@ -1,8 +1,22 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { fetchDataFromApi } from '../api';
 
 function SearchScreen({route,navigation}) {
-const {data1} = route.params;   
+const [weatherData, setWeatherData] = useState(null)
+const [city, setCity] = useState("");
+
+handleSearch =  () => {
+        const data = fetchDataFromApi("","",city)
+        .then(data => {
+            console.log('Search data' , data)
+            setWeatherData(data)
+        })
+        .catch(error => {
+            console.log('Error fetching data', error)
+        })
+    
+}
 console.log({})
   return (
    <View style={{
@@ -13,12 +27,20 @@ console.log({})
     <TextInput
     style={styles.input}
     placeholder='Enter a city'
+    onChangeText={(text) => setCity(text)}
+    value={city}
     />
-    <Text style={
-        {
-            color:'blue'
-        }
-    }>{data1.name ? data1.name : ""}</Text>
+    <Button title='Search' onPress={handleSearch}></Button>
+    {
+        weatherData && (
+            <View>
+         <Text style={styles.weatherText}>
+           {weatherData.name}, {weatherData.sys.country}: {weatherData.main.temp}°C
+         </Text>
+       </View>
+        )
+    }
+   
    </View>
   )
 }
