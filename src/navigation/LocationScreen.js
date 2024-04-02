@@ -66,7 +66,7 @@ function LocationScreen({navigation}) {
           marginBottom:16,
           
         }}
-        onPress={() => navigation.navigate('Search')}
+        onPress={() => navigation.navigate('Search', { data1: data })}
         >Add</Text>
         <Text style={{
           fontWeight:500,

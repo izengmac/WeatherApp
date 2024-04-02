@@ -1,7 +1,9 @@
 import React from 'react'
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-function SearchScreen({weather,temperature}) {
+function SearchScreen({route,navigation}) {
+const {data1} = route.params;   
+console.log({})
   return (
    <View style={{
     justifyContent:'center',
@@ -14,9 +16,9 @@ function SearchScreen({weather,temperature}) {
     />
     <Text style={
         {
-            color:'#000000'
+            color:'blue'
         }
-    }>{weather}</Text>
+    }>{data1.name ? data1.name : ""}</Text>
    </View>
   )
 }
