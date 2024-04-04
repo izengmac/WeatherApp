@@ -1,4 +1,4 @@
-const API_KEY ="5d240e73bdeaa7d6c94bdcd0543d36ec";
+const API_KEY ="44f9bf2d1eed5b5c6184ea20588a27b2";
 
 export const fetchDataFromApi = (latitude, longitude, city) => {
     let url;

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, Image,TextInput,StyleSheet, Button} from 'react-native';
 import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { weatherConditions } from './WeatherConditions';
 import PropTypes from 'prop-types';
+import { fetchDataFromApi } from '../api';
+import {debounce} from 'lodash'
 
-const API_KEY = '5d240e73bdeaa7d6c94bdcd0543d36ec';
+const API_KEY = '7ada4c6a1f4922f74e2893378a54776b';
 
 const clothingItems = [
   { name: "Heavy Coat", image: require('../assets/coat.png') },
@@ -20,7 +22,7 @@ const clothingItems = [
   { name: "Summer Dress", image: require('../assets/dress (1).png') },
 ];
 
-const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidityvalue, typeweather}) => {
+const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidityvalue, typeweather,unity}) => {
   console.log(typeof typeweather)
   
   return (
@@ -42,7 +44,7 @@ const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidi
         alignItems: "center",
         borderRightColor: 'black',
         borderRightWidth: 1,
-        marginRight: 8,
+        marginRight: 4,
 
       }}>
         <Text style={{
@@ -70,7 +72,7 @@ const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidi
         <Text style={{
           fontSize: 14,
           color: 'white'
-        }}>{windspeed} {windspeedvalue} m/c | {title} {humidityvalue}</Text>
+        }}>{windspeed} {windspeedvalue} m/c | {title} {humidityvalue}{unity}</Text>
       </View>
       <View>
         <View style={{
@@ -109,11 +111,11 @@ const ClothingRecommendation = ({ temperature, weather }) => {
     } else if (temp >= 5 && temp < 10) {
       return [clothingItems[1], clothingItems[4], clothingItems[5]]; // Light Jacket, Sweater, Jeans
     } else if (temp >= 10 && temp < 15) {
-      return [clothingItems[1], clothingItems[4], clothingItems[6], clothingItems[5]]; // Light Jacket, Sweater, Dress Shirt, Jeans
+      return [clothingItems[1], clothingItems[4], clothingItems[6]];// Light Jacket, Sweater, Dress Shirt, Jeans
     } else if (temp >= 15 && temp < 20) {
-      return [clothingItems[2], clothingItems[4], clothingItems[6], clothingItems[7]]; // T-Shirt and Shorts, Sweater, Dress Shirt, Skirt
+      return [clothingItems[2], clothingItems[4], clothingItems[6]]; // T-Shirt and Shorts, Sweater, Dress Shirt, Skirt
     } else if (temp >= 20 && temp < 25) {
-      return [clothingItems[2], clothingItems[4], clothingItems[7], clothingItems[8]]; // T-Shirt and Shorts, Sweater, Skirt, Shorts
+      return [clothingItems[2], clothingItems[4], clothingItems[7]]; // T-Shirt and Shorts, Sweater, Skirt, Shorts
     } else if (temp >= 25 && temp < 30) {
       return [clothingItems[2], clothingItems[8], clothingItems[9]]; // T-Shirt and Shorts, Shorts, Summer Dress
     } else {
@@ -132,6 +134,7 @@ const ClothingRecommendation = ({ temperature, weather }) => {
        paddingVertical:12
        
        }} >
+
       {recommendedClothes.map((item, index) => (
         <View key={index}  style={{ alignItems: 'center',flexDirection:'row',justifyContent:'space-around',marginBottom:6}}>
             <Image source={item.image} style={{ width: 100, height: 100}} />
@@ -147,42 +150,40 @@ const ClothingRecommendation = ({ temperature, weather }) => {
 
 function HomeScreen() {
   const [data, setData] = useState({});
+  const [city, setCity] = useState("");  
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        fetchDataFromApi("40.7128", "-74.0060");
-        return;
-      }
+  const handleSearch =  (value) => {
+    const json = fetchDataFromApi("","",value)
+    .then(json => {
+        setData(json)
+        console.log('Search data' , json)
+    })
+    .catch(error => {
+        console.log('Error fetching data', error)
+    })
+  } 
+  const handleTextDebounce = useCallback(debounce(handleSearch,1200), [])
 
-      let location = await Location.getCurrentPositionAsync({});
-      fetchDataFromApi(location.coords.latitude, location.coords.longitude);
-    })();
-  }, []);
 
-  const fetchDataFromApi = (latitude, longitude) => {
-    if (latitude && longitude) {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`)
-        .then(res => res.json())
-        .then(data => {
-          setData(data);
-          console.log(data)
-          console.log(data)
-          console.log(typeof data.weather[0].main)
-          console.log(data.weather[0].main)
-         
-          
-          
-        });
-    }
-  };
+  
 
   const temperature = data.main?.temp || '';
   const weather = data.weather ? data.weather[0].main : '';
-
+  
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#9EC9FE', paddingTop: 76 }}>
+     <View style={{
+      flexDirection:'row',
+      marginTop:100,
+     }}>
+     <TextInput
+          style={styles.input}
+          placeholder='Enter a city'
+          onChangeText={handleTextDebounce}
+          
+    />
+    <Button title='Search'></Button>
+     </View>
       <Text style={{ fontWeight: "500", fontSize: 20, color: "white", marginBottom: 8, textAlign: 'center' }}>
         Clothes For Today
       </Text>
@@ -192,7 +193,8 @@ function HomeScreen() {
         humidityvalue={data.main ? data.main.humidity : ""}
         windspeed="WindSpeed"
         windspeedvalue={data.wind ? data.wind.speed : ""}
-        title="Current Weather"
+        title="Humidity"
+        unity='%'
         typeweather={data.weather && data.weather.length > 0 ? data.weather[0].main : ""}
        
 
@@ -206,5 +208,26 @@ WeatherItem.propTypes = {
   typeweather: PropTypes.string
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#e3dbd5",
+  },
+  input: {
+   
+    paddingHorizontal: 10,
+    width: 200,
+    height: 30,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius:16
+  },
+  weatherText: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+ });
 export default HomeScreen;
 

@@ -1,23 +1,27 @@
-import React, {useState} from 'react'
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react'
+import { View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import { fetchDataFromApi } from '../api';
+import LocationComponent from '../navigation/components/location'
+import { FlatList } from 'react-native-gesture-handler';
 
 function SearchScreen({route,navigation}) {
 const [weatherData, setWeatherData] = useState(null)
-const [city, setCity] = useState("");
+const [city, setCity] = useState("");    
+console.log('weatherdata' ,weatherData)
 
 handleSearch =  () => {
-        const data = fetchDataFromApi("","",city)
-        .then(data => {
-            console.log('Search data' , data)
-            setWeatherData(data)
-        })
-        .catch(error => {
-            console.log('Error fetching data', error)
-        })
-    
+  const json = fetchDataFromApi("","",city)
+  .then(json => {
+      setWeatherData(json)
+      console.log('Search data' , json)
+  })
+  .catch(error => {
+      console.log('Error fetching data', error)
+  })
 }
-console.log({})
+
+
+
   return (
    <View style={{
     justifyContent:'center',
@@ -30,7 +34,7 @@ console.log({})
     onChangeText={(text) => setCity(text)}
     value={city}
     />
-    <Button title='Search' onPress={handleSearch}></Button>
+    <Button title='Search' onPress={handleSearch()}></Button>
     {
         weatherData && (
             <View>
@@ -40,7 +44,19 @@ console.log({})
        </View>
         )
     }
-   
+    {city && weatherData && (
+        <FlatList
+          style={{
+            flex: 1,
+            backgroundColor: '#ffffff'
+          }}
+          data={[weatherData]}  
+         // Convert weatherData to an array for FlatList
+          renderItem={({ item }) => <LocationComponent item={item} navigation={navigation} />} // Pass item instead of city directly
+          keyExtractor={item => item.id.toString()} // Use item.id for keyExtractor
+          showsVerticalScrollIndicator={false}
+        />
+      )}
    </View>
   )
 }

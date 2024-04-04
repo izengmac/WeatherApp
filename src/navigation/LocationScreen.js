@@ -7,11 +7,14 @@ const API_KEY ="5d240e73bdeaa7d6c94bdcd0543d36ec";
 import * as Location from 'expo-location';
 import SearchScreen from '../screens/SearchScreen';
 import { fetchDataFromApi } from '../api.js';
+import LocationComponent from "./components/location.js"
+import { FlatList } from 'react-native-web';
 
 function LocationScreen({navigation}) {
     const [date, setDate] = useState('')
     const [time, setTime] = useState('')
     const [data, setData] =  useState({});
+    console.log('data', data)
     console.log(data)
     useEffect (() => {
         setInterval(() => {
@@ -43,7 +46,7 @@ function LocationScreen({navigation}) {
        const Apiconst =  fetchDataFromApi(location.coords.latitude, location.coords.longitude);
        const Apiconss = fetchDataFromApi(location.coords.latitude, location.coords.longitude, '')
           .then(data => {
-          
+            
             setData(data)
           })
           .catch(error => {
@@ -55,55 +58,10 @@ function LocationScreen({navigation}) {
     }, [])
 
   return (
-    <View style={{
-      paddingVertical:80,
-      paddingHorizontal:12
-    }}>
-        <Text style={{
-          color:'#1B6BB1',
-          fontSize:20,
-          fontWeight:"400",
-          marginBottom:16,
-          
-        }}
-        onPress={() => navigation.navigate('Search', { data1: data })}
-        >Add</Text>
-        <Text style={{
-          fontWeight:500,
-          fontSize:40,
-          fontWeight:"500"
-        }}>Location</Text>
-        <View style={{
-           backgroundColor:'#121212',
-           borderRadius:20,
-           width:351,
-           height:73,
-           padding:8,
-           paddingHorizontal:32,
-           flexDirection:'row',
-           justifyContent:'space-between',
-           alignItems:'center'
-
-        }}>
-            <View style={{
-                 
-                }}>
-                <Text style={{
-                  color:"white",
-                  fontSize:24,
-
-                }}
-                >{data.name ? data.name : ""}</Text>
-                <Text style={{
-                  fontSize:20,
-                  fontWeight:200,
-                  color:'white'
-                }}
-                >{time}</Text>
-            </View>
-            <FontAwesome5 name="location-arrow" size={24} color="#1A41C3" />
-        </View>
-    </View>
+   <View>
+    <LocationComponent data={data} time={time} navigation={navigation}/>
+   
+   </View>
   )
 }
 
