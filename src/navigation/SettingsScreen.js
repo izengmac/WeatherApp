@@ -19,7 +19,7 @@ function SettingsScreen() {
             width:100,
             height:100,
             borderWidth:1,
-            borderRadius:50,
+            borderRadius:55,
             borderColor:'gray',
         
            
