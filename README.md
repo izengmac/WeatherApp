@@ -1,5 +1,5 @@
 # WeatherApp
-a client project for a weather application that recommends clothes depending on weather 
+weather application that recommends clothes depending on weather 
 Sure, here's an example of a README.md file for an Expo app:
 
 ```markdown
