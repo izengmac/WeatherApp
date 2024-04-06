@@ -1,7 +1,7 @@
 import React from 'react'
 import {View,Text} from "react-native"
 import { FontAwesome5 } from '@expo/vector-icons';
-import LocationScreen from '../LocationScreen';
+
 
 
 function location ({SearchScreen,city,data, time, navigation}) {
