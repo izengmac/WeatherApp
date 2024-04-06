@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState,useRef } from 'react';
 import { View, Text, Image,TextInput,StyleSheet, Button} from 'react-native';
 import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -10,16 +10,16 @@ import {debounce} from 'lodash'
 const API_KEY = '7ada4c6a1f4922f74e2893378a54776b';
 
 const clothingItems = [
-  { name: "Heavy Coat", image: require('../assets/coat.png') },
-  { name: "Light Jacket", image: require('../assets/jacket copy.png') },
-  { name: "T-Shirt", image: require('../assets/t-shirt.png') },
-  { name: "Light Clothes", image: require('../assets/feather.png') },
-  { name: "Sweater", image: require('../assets/sweater.png') },
-  { name: "Jeans", image: require('../assets/jeans.png') },
-  { name: "Dress", image: require('../assets/dress.png') },
-  { name: "Skirt", image: require('../assets/skirt.png') },
-  { name: "Shorts", image: require('../assets/shorts.png') },
-  { name: "Summer Dress", image: require('../assets/dress (1).png') },
+  { name: "Тяжелое пальто", image: require('../assets/coat.png') },
+  { name: "Легкая куртка", image: require('../assets/jacket copy.png') },
+  { name: "футболка", image: require('../assets/t-shirt.png') },
+  { name: "легкая одежда", image: require('../assets/feather.png') },
+  { name: "Свитер", image: require('../assets/sweater.png') },
+  { name: "Джинсы", image: require('../assets/jeans.png') },
+  { name: "Платье", image: require('../assets/dress.png') },
+  { name: "Юбка", image: require('../assets/skirt.png') },
+  { name: "Шорты", image: require('../assets/shorts.png') },
+  { name: "Летнее платье", image: require('../assets/dress (1).png') },
 ];
 
 const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidityvalue, typeweather,unity}) => {
@@ -60,19 +60,13 @@ const WeatherItem = ({ city, tempvalue, windspeed, title, windspeedvalue, humidi
           <Text style={{
             fontSize: 36,
             color: 'white'
-          }}>{tempvalue}</Text>
-          <Text style={{
-            fontSize: 20,
-            color: 'white',
-            position: 'relative',
-            top: -25,
-            left: 4
-          }}>&#176;</Text>
+          }}>{tempvalue}{`\u00B0`}</Text>
+         
         </Text>
         <Text style={{
           fontSize: 14,
           color: 'white'
-        }}>{windspeed} {windspeedvalue} m/c | {title} {humidityvalue}{unity}</Text>
+        }}>{windspeed} {windspeedvalue} м/с | {title} {humidityvalue}{unity}</Text>
       </View>
       <View>
         <View style={{
@@ -151,11 +145,13 @@ const ClothingRecommendation = ({ temperature, weather }) => {
 function HomeScreen() {
   const [data, setData] = useState({});
   const [city, setCity] = useState("");  
+  const textInputRef = useRef(null);
 
   const handleSearch =  (value) => {
     const json = fetchDataFromApi("","",value)
     .then(json => {
         setData(json)
+        textInputRef.current.clear();
         console.log('Search data' , json)
     })
     .catch(error => {
@@ -178,22 +174,23 @@ function HomeScreen() {
      }}>
      <TextInput
           style={styles.input}
-          placeholder='Enter a city'
+          placeholder='Введите город'
           onChangeText={handleTextDebounce}
+          ref={textInputRef}
           
     />
-    <Button title='Search'></Button>
+    
      </View>
-      <Text style={{ fontWeight: "500", fontSize: 20, color: "white", marginBottom: 8, textAlign: 'center' }}>
-        Clothes For Today
+      <Text style={{ fontWeight: "500", fontSize: 20, color: "white", marginBottom: 8, textAlign: 'center' , paddingVertical:15}}>
+      Одежда на сегодняшний день
       </Text>
       <WeatherItem
         city={data.name ? data.name : ""}
         tempvalue={temperature}
         humidityvalue={data.main ? data.main.humidity : ""}
-        windspeed="WindSpeed"
+        windspeed="Скорость ветра"
         windspeedvalue={data.wind ? data.wind.speed : ""}
-        title="Humidity"
+        title="Влажность"
         unity='%'
         typeweather={data.weather && data.weather.length > 0 ? data.weather[0].main : ""}
        

@@ -27,7 +27,7 @@ function MyTabs() {
       name="Location"
       component={LocationScreen}
       options={{
-        tabBarLabel: 'Location',
+        tabBarLabel: 'Локация',
         tabBarIcon: ({ color }) => (
             <Entypo name="location-pin" size={24} color={color} />
             ),
@@ -38,7 +38,7 @@ function MyTabs() {
       component={HomeScreen}
       barStyle={{ backgroundColor: 'blue' }}
       options={{
-        tabBarLabel: 'Location',
+        tabBarLabel: 'Погода',
         tabBarIcon: ({ color }) => (
             <Entypo name="light-up" size={24} color={color}/>
             ),
@@ -48,7 +48,7 @@ function MyTabs() {
       name="Settings" 
       component={SettingsScreen}
       options={{
-        tabBarLabel: 'Location',
+        tabBarLabel: 'Настройки',
         shifting:false,
         tabBarBadge:false,
         tabBarIcon: ({ color }) => (

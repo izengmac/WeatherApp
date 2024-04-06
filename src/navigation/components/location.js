@@ -13,9 +13,9 @@ function location ({SearchScreen,city,data, time, navigation}) {
       }}>
           <Text style={{
             fontWeight:500,
-            fontSize:40,
+            fontSize:30,
             fontWeight:"500"
-          }}>Location</Text>
+          }}>Местоположение</Text>
           <View style={{
              backgroundColor:'#121212',
              borderRadius:20,

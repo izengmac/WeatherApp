@@ -33,7 +33,7 @@ function SettingsScreen() {
 
         }}
         
-        >User123</Text>
+        >by Emin Shamilov</Text>
      </View>
    </View>
   )
